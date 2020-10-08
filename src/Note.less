@@ -1,12 +1,19 @@
-* {
-    box-sizing: border-box;
-    margin: 0px;
-    padding: 0px;
-}
-.note {
-    display: flex;
-    flex-direction: row;
-    border: 1px solid green;
+@import "colors.less";
 
 
+.note {  
+    background-color: @note-color;
+    color: @text-color;
+
+
+    .title {
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .date {
+        color: @pale-color;
+        font-size: 13px;
+        padding-bottom: 8px;;
+    }
 }

@@ -1,0 +1,50 @@
+@import "colors.less";
+
+.pop-up {
+    background-color: @note-color;
+    position: fixed;
+    z-index: 1;
+    width: 500px;
+    height: 500px;
+    overflow: auto;
+    border: 1px solid rgba(178,178,178,0.15);
+    top: 29%;
+    left: 37%;
+
+
+    label {
+        color: @text-color;
+    }
+
+    input {
+        color: @text-color;
+        background-color: @note-color;
+        outline: none;
+
+        &::placeholder {
+            color: @text-color;
+        }
+    }
+
+    textarea {
+        color: @text-color;
+        background-color: @note-color;
+        outline: none;
+        resize: none;
+        max-width: 234px;
+        max-height: 350px;
+        
+        &::placeholder {
+            color: @text-color;
+        }
+    }
+
+    .add-icon {
+        color: @redish-color;
+    }
+
+    .edit-icon {
+        float: right;
+        width: 20px;
+    }
+}

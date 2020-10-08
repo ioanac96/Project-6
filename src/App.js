@@ -1,19 +1,23 @@
 import React, { useState } from 'react';
 import Note from './Note.js';
-import './App.css';
+import './App.less';
 import PopUp from './PopUp.js';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 
 
 
 function App() {
   let [notes, setNotes] = useState([]);
+  let [add, setAdd] = useState(false);
 
 
   const dateNow = () => {
     let date = new Date().toUTCString().split("");
     date.splice(3,1);
     let newDate = date.join("").split(" ");
-    newDate.splice(5,1);
+    newDate.splice(4,2);
     let lastDate = newDate.join(" ");
     return lastDate;
   }
@@ -27,6 +31,8 @@ function App() {
         check: false
       }
     ]);
+
+    setAdd(false);
   
   }
 
@@ -73,26 +79,32 @@ function App() {
    
   }
 
+
+
   
- 
+ console.log(add);
 
   return (
     <div className="App">
       <div className="addNote">
-        <PopUp onSave={onClickAdd} type="add"/>
+        <AddCircleIcon onClick={() => setAdd(!add)} className="big-add"/>
+        {
+          (add) ? <div className="pop-up-parent"><PopUp onSave={onClickAdd}  type="add"/></div> : null
+        }
+        
         
       </div>
-      
+      <div className="notes">
       {
         notes.map((current, index)=> {
           return (
-            <div> 
+            <div className="one-note"> 
                {
                 (current.check === true) ?  <PopUp {...current} onSave={onSave(current, index)} type="edit" close/> : 
                 <div>
+                  <DeleteIcon className="icon" onClick={onDelete(index)}/>
+                  <EditIcon className="icon" onClick={onEdit(index)}/>
                   <Note date={current.date} {...current}/>
-                  <button onClick={onEdit(index)}>Edit</button>
-                  <button onClick={onDelete(index)}>Delete</button>
                 </div>
               }
               
@@ -104,6 +116,7 @@ function App() {
           );
         })
       }
+      </div>
     </div>
   );
 }

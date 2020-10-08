@@ -1,0 +1,45 @@
+@import "colors.less";
+
+* {
+  box-sizing: border-box;
+  margin: 0px;
+  padding: 0px;
+}
+
+.App {
+ background-color: @background-color;
+ height: 100vh;
+ 
+
+ .notes {
+  display: flex;
+  flex-wrap: wrap;
+
+  .one-note {
+    background-color: @note-color;
+    color: @text-color;
+    border-radius: 12;
+    max-width: 234px;
+    max-height: 350px;
+    height: auto;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 19px;
+    border: 1px solid rgba(178,178,178,0.15);
+    overflow: auto;
+
+    .icon{
+      width: 17px;
+      float: right;
+    }
+  }
+ }
+
+ .big-add {
+   color: @redish-color;
+   width: 30px;
+
+ }
+
+ 
+}
