@@ -15,31 +15,65 @@
   display: flex;
   flex-wrap: wrap;
 
+  .hidden-note {
+    opacity: 0;
+  }
+
   .one-note {
     background-color: @note-color;
     color: @text-color;
     border-radius: 12;
-    max-width: 234px;
-    max-height: 350px;
-    height: auto;
     margin: 10px;
     padding: 10px;
     border-radius: 19px;
     border: 1px solid rgba(178,178,178,0.15);
-    overflow: auto;
+    max-width: 304px;
+    max-height: 200px;
+    overflow: hidden;
 
     .icon{
       width: 17px;
       float: right;
+      
+
+      &:hover {
+        color: @pale-color;
+        cursor: pointer;
+    }
     }
   }
  }
 
- .big-add {
-   color: @redish-color;
-   width: 30px;
+ .add-note {
+   padding: 15px;
+  .big-add {
+    color: @redish-color;
+    width: 30px;
+
+    &:hover {
+      cursor: pointer;
+  }
+ 
+  }
+ }
+  
+
+
+
+ .pop-up-parent {
+   width: 100vw;
+   height: 100vh;
+   top: 0;
+   left: 0;
+   position: fixed;
 
  }
 
+ .pop-up-back {
+   height: 100vh;
+   width: 100vw;
+   background-color: @background-color;
+   opacity: 0.5;
+ }
  
 }

@@ -6,11 +6,23 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 
+const getLocalData = () => {
+  let data = localStorage.getItem('notes');
+  let isNull = data === null;
+  let objData = [];
+  if(isNull === false) {
+    let localData = data;
+    objData = JSON.parse(localData);
+  }
 
+  return objData;
+}
 
 function App() {
-  let [notes, setNotes] = useState([]);
+  let [notes, setNotes] = useState(getLocalData());
   let [add, setAdd] = useState(false);
+
+
 
 
   const dateNow = () => {
@@ -23,6 +35,15 @@ function App() {
   }
 
   const onClickAdd = (title, text) => {
+    let newNotes = [...notes,
+      {
+        title: title,
+        date: dateNow(),
+        text: text,
+        check: false
+      }
+    ];
+
     setNotes( [...notes,
       {
         title: title,
@@ -33,6 +54,13 @@ function App() {
     ]);
 
     setAdd(false);
+
+
+   localStorage.setItem('notes', JSON.stringify(newNotes));
+
+
+    
+
   
   }
 
@@ -40,8 +68,10 @@ function App() {
 
   const onDelete = (index) => {
     return () => {
-      let newNotes = notes.filter((current, i) => i !== index);
-      setNotes(newNotes);    
+      let nootes = getLocalData();
+      let newNotes = nootes.filter((current, i) => i !== index);
+      setNotes(newNotes);  
+      localStorage.setItem('notes', JSON.stringify(newNotes));  
     }
     
   }
@@ -75,21 +105,46 @@ function App() {
       });
   
       setNotes(newArray);
+      localStorage.setItem('notes', JSON.stringify(newArray));  
     }  
    
   }
 
+  const clickOutside = () => {
+    setAdd(false);
+  }
 
-
+  const onClickOutsideEdit = (current,index) => {
+    return () => {
+      let newValue = {
+        ...current,
+        check: false
+      }
   
- console.log(add);
+      let newArray = notes.map((value, position) =>{
+        if(index === position) return newValue;
+        else return value;
+      });
+  
+      setNotes(newArray);
+    }  
+   
+  }
+
+console.log(notes);
+ 
+
 
   return (
     <div className="App">
-      <div className="addNote">
+      <div className="add-note">
         <AddCircleIcon onClick={() => setAdd(!add)} className="big-add"/>
         {
-          (add) ? <div className="pop-up-parent"><PopUp onSave={onClickAdd}  type="add"/></div> : null
+          (add) ? 
+          <div className="pop-up-parent"> 
+            <div className="pop-up-back" onClick={clickOutside}></div>
+            <PopUp onSave={onClickAdd}  type="add"/>
+          </div> : null
         }
         
         
@@ -100,13 +155,18 @@ function App() {
           return (
             <div className="one-note"> 
                {
-                (current.check === true) ?  <PopUp {...current} onSave={onSave(current, index)} type="edit" close/> : 
-                <div>
+                (current.check === true) ?  
+                <div className="pop-up-parent">
+                  <div className="pop-up-back" onClick={onClickOutsideEdit(current,index)}></div>
+                  <PopUp {...current} onSave={onSave(current, index)} type="edit" close/>
+                </div> : 
+                null
+              }
+              <div>
                   <DeleteIcon className="icon" onClick={onDelete(index)}/>
                   <EditIcon className="icon" onClick={onEdit(index)}/>
-                  <Note date={current.date} {...current}/>
+                  <Note  {...current}/>
                 </div>
-              }
               
              
               

@@ -2,6 +2,8 @@
 
 .pop-up {
     background-color: @note-color;
+    display: flex;
+    flex-direction: column;
     position: fixed;
     z-index: 1;
     width: 500px;
@@ -10,20 +12,31 @@
     border: 1px solid rgba(178,178,178,0.15);
     top: 29%;
     left: 37%;
+    padding: 20px;
+    border-radius: 10px;
 
 
-    label {
-        color: @text-color;
-    }
 
     input {
         color: @text-color;
         background-color: @note-color;
         outline: none;
+        margin-bottom: 10px;
+        border: none;
+        margin-bottom: 10px;
+        padding: 8px;
+        font-size: 16px;
+        font-weight: bold;
 
         &::placeholder {
             color: @text-color;
         }
+
+        &:-webkit-autofill, &:-webkit-autofill:hover, &:-webkit-autofill:focus, &:-webkit-autofill:active  {
+            -webkit-box-shadow: 0 0 0 30px @note-color inset !important;
+            -webkit-text-fill-color: @text-color !important;
+        }
+
     }
 
     textarea {
@@ -31,20 +44,53 @@
         background-color: @note-color;
         outline: none;
         resize: none;
-        max-width: 234px;
+        max-width: 447px;
         max-height: 350px;
+        border: none;
+        margin-bottom: 10px;
+        font-size: 15px;
+        padding: 8px;
+        font-family: Arial, Helvetica, sans-serif;
+        flex-grow: 2;
         
         &::placeholder {
             color: @text-color;
         }
     }
 
-    .add-icon {
-        color: @redish-color;
+    .icons-parent {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        padding: 8px;
+        
+        .add-button {
+            background-color: @text-color;
+            color: @background-color;
+            font-size: 15px;
+            padding: 4px;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+            float: right;
+            margin-right: 7px;
+            margin-top: 21px;
+
+            &:hover {
+                background-color: @pale-color;
+                cursor: pointer;
+            }
+        }
+    
+        .edit-icon {
+            margin: 2px;
+
+            &:hover {
+                color: @pale-color;
+                cursor: pointer;
+            }
+        }
     }
 
-    .edit-icon {
-        float: right;
-        width: 20px;
-    }
+    
 }
