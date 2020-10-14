@@ -1,29 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Note from './Note.js';
 import './App.less';
 import PopUp from './PopUp.js';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import {addNote, deleteNote, editNote, saveNote} from './actions.js';
+import {connect} from 'react-redux';
 
-const getLocalData = () => {
-  let data = localStorage.getItem('notes');
-  let isNull = data === null;
-  let objData = [];
-  if(isNull === false) {
-    let localData = data;
-    objData = JSON.parse(localData);
-  }
-
-  return objData;
-}
-
-function App() {
-  let [notes, setNotes] = useState(getLocalData());
+function App(props) {
   let [add, setAdd] = useState(false);
 
+  useEffect(() => {
+    localStorage.setItem('notes', JSON.stringify(props.notes));
+  }, [props.notes]);
 
-
+  console.log("props", props);
 
   const dateNow = () => {
     let date = new Date().toUTCString().split("");
@@ -35,79 +27,27 @@ function App() {
   }
 
   const onClickAdd = (title, text) => {
-    let newNotes = [...notes,
-      {
-        title: title,
-        date: dateNow(),
-        text: text,
-        check: false
-      }
-    ];
-
-    setNotes( [...notes,
-      {
-        title: title,
-        date: dateNow(),
-        text: text,
-        check: false
-      }
-    ]);
-
+    props.add(title, dateNow(), text, false);
     setAdd(false);
-
-
-   localStorage.setItem('notes', JSON.stringify(newNotes));
-
-
-    
-
-  
   }
-
-
 
   const onDelete = (index) => {
     return () => {
-      let nootes = getLocalData();
-      let newNotes = nootes.filter((current, i) => i !== index);
-      setNotes(newNotes);  
-      localStorage.setItem('notes', JSON.stringify(newNotes));  
-    }
-    
+      props.delete(index);
+    } 
   }
 
   const onEdit = (index) => {
     return () => {
-      let newArray = notes.map((current, i) => {
-        if(index === i) return {
-          ...current,
-          check: !current.check
-        }
-        else return current;
-      });
-      setNotes(newArray);
+      props.edit(index);
     } 
     
   }
 
   const onSave = (current, index) => {
     return (title, text) => {
-      let newValue = {
-        ...current,
-        title: title,
-        text: text,
-        check: false
-      }
-  
-      let newArray = notes.map((value, position) =>{
-        if(index === position) return newValue;
-        else return value;
-      });
-  
-      setNotes(newArray);
-      localStorage.setItem('notes', JSON.stringify(newArray));  
-    }  
-   
+      props.save(index, title, dateNow(), text, false); 
+    }   
   }
 
   const clickOutside = () => {
@@ -116,24 +56,9 @@ function App() {
 
   const onClickOutsideEdit = (current,index) => {
     return () => {
-      let newValue = {
-        ...current,
-        check: false
-      }
-  
-      let newArray = notes.map((value, position) =>{
-        if(index === position) return newValue;
-        else return value;
-      });
-  
-      setNotes(newArray);
-    }  
-   
+      props.save(index, current.title, current.date, current.text, false);
+    }   
   }
-
-console.log(notes);
- 
-
 
   return (
     <div className="App">
@@ -151,7 +76,7 @@ console.log(notes);
       </div>
       <div className="notes">
       {
-        notes.map((current, index)=> {
+        props.notes.map((current, index)=> {
           return (
             <div className="one-note"> 
                {
@@ -181,4 +106,20 @@ console.log(notes);
   );
 }
 
-export default App;
+function mapStateToProps(state) {
+    console.log("aici-redux",state);
+    return {
+      notes:  state.notes
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    add: (title, date, text, check) =>  dispatch(addNote(title,date, text, check)),
+    delete: (index) => dispatch(deleteNote(index)),
+    edit: (index) => dispatch(editNote(index)),
+    save: (index, title, date, text, check) => dispatch(saveNote(index, title, date, text, check))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
