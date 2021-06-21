@@ -5,7 +5,7 @@ import PopUp from './PopUp.js';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
-import {addNote, deleteNote, editNote, saveNote} from './actions.js';
+import {deleteNote, editNote, saveNote} from './actions.js';
 import {connect} from 'react-redux';
 
 function App(props) {
@@ -17,19 +17,9 @@ function App(props) {
 
   console.log("props", props);
 
-  const dateNow = () => {
-    let date = new Date().toUTCString().split("");
-    date.splice(3,1);
-    let newDate = date.join("").split(" ");
-    newDate.splice(4,2);
-    let lastDate = newDate.join(" ");
-    return lastDate;
-  }
-
-  const onClickAdd = (title, text) => {
-    props.add(title, dateNow(), text, false);
-    setAdd(false);
-  }
+  // const onClickAdd = (title, text) => {
+  //   setAdd(false);
+  // }
 
   const onDelete = (index) => {
     return () => {
@@ -44,11 +34,6 @@ function App(props) {
     
   }
 
-  const onSave = (current, index) => {
-    return (title, text) => {
-      props.save(index, title, dateNow(), text, false); 
-    }   
-  }
 
   const clickOutside = () => {
     setAdd(false);
@@ -60,6 +45,12 @@ function App(props) {
     }   
   }
 
+  const onAdd = () => {
+    return (value) => {
+      setAdd(value);   
+    }
+  }
+
   return (
     <div className="App">
       <div className="add-note">
@@ -68,7 +59,7 @@ function App(props) {
           (add) ? 
           <div className="pop-up-parent"> 
             <div className="pop-up-back" onClick={clickOutside}></div>
-            <PopUp onSave={onClickAdd}  type="add"/>
+            <PopUp type="add" onAdd={onAdd}/>
           </div> : null
         }
         
@@ -83,7 +74,7 @@ function App(props) {
                 (current.check === true) ?  
                 <div className="pop-up-parent">
                   <div className="pop-up-back" onClick={onClickOutsideEdit(current,index)}></div>
-                  <PopUp {...current} onSave={onSave(current, index)} type="edit" close/>
+                  <PopUp {...current}  index={index} type="edit" close/>
                 </div> : 
                 null
               }
@@ -115,7 +106,6 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    add: (title, date, text, check) =>  dispatch(addNote(title,date, text, check)),
     delete: (index) => dispatch(deleteNote(index)),
     edit: (index) => dispatch(editNote(index)),
     save: (index, title, date, text, check) => dispatch(saveNote(index, title, date, text, check))
