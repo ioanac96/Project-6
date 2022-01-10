@@ -5,11 +5,20 @@ import PopUp from './PopUp.js';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import EventNoteIcon from '@material-ui/icons/EventNote';
 import {deleteNote, editNote, saveNote} from './actions.js';
 import {connect} from 'react-redux';
+import IconButton from '@material-ui/core/IconButton';
+import { Dialog, DialogActions, DialogContent, DialogTitle, Tooltip } from '@material-ui/core';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import CancelIcon from '@material-ui/icons/Cancel';
+
+
 
 function App(props) {
-  let [add, setAdd] = useState(false);
+  const [add, setAdd] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const [deleteIndex, setDeleteIndex] = useState(null);
 
   useEffect(() => {
     localStorage.setItem('notes', JSON.stringify(props.notes));
@@ -22,18 +31,31 @@ function App(props) {
   // }
 
   const onDelete = (index) => {
+    
+    console.log("!!", index);
     return () => {
+      setOpenModal(false);
       props.delete(index);
+      
     } 
+    
+  }
+
+  const handleOpenModal = (index) => () => {
+    setOpenModal(true);
+    setDeleteIndex(index);
+  }
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  
   }
 
   const onEdit = (index) => {
     return () => {
       props.edit(index);
-    } 
-    
+    }  
   }
-
 
   const clickOutside = () => {
     setAdd(false);
@@ -51,15 +73,25 @@ function App(props) {
     }
   }
 
+
   return (
+    
     <div className="App">
+      <div className="app-header">
+        <EventNoteIcon className="header-logo"></EventNoteIcon>
+        <h4 className="header-title">Notes Manager</h4>
+      </div>
+      
       <div className="add-note">
-        <AddCircleIcon onClick={() => setAdd(!add)} className="big-add"/>
+        <IconButton onClick={() => setAdd(!add)}>
+          <AddCircleIcon  className="big-add"/>
+          <div className="add-note-title">Add new note</div>
+        </IconButton>
         {
           (add) ? 
           <div className="pop-up-parent"> 
             <div className="pop-up-back" onClick={clickOutside}></div>
-            <PopUp type="add" onAdd={onAdd}/>
+            <PopUp type="add" onAdd={onAdd} onCancel={clickOutside}/>
           </div> : null
         }
         
@@ -75,30 +107,51 @@ function App(props) {
                 <div className="pop-up-parent">
                   <div className="pop-up-back" onClick={onClickOutsideEdit(current,index)}></div>
                   <PopUp {...current}  index={index} type="edit" close/>
-                </div> : 
-                null
+                </div> : null
               }
-              <div>
-                  <DeleteIcon className="icon" onClick={onDelete(index)}/>
-                  <EditIcon className="icon" onClick={onEdit(index)}/>
-                  <Note  {...current}/>
-                </div>
-              
-             
-              
-            </div>
-            
-                 
+                <Note  {...current}/>
+                <div className="icons-container">
+                    <Tooltip title="Edit" placement="bottom" arrow>
+                      <IconButton    onClick={onEdit(index)}>
+                        <EditIcon className="icon"/>
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Delete" placement="bottom"  arrow>
+                      <IconButton onClick={handleOpenModal(index)}>
+                        <DeleteIcon className="icon delete-icon"/>
+                      </IconButton>
+                    </Tooltip>
+
+                    
+                  </div>
+                  
+                </div> 
           );
         })
       }
       </div>
+      <Dialog open={openModal} fullWidth maxWidth="sm" className="confirmation-modal">
+        <DialogTitle>Deleting note</DialogTitle>
+        <DialogContent>Are you sure you want to delete this note?</DialogContent>
+        <DialogActions>
+          <Tooltip title="Yes" placement="bottom"  arrow>
+            <IconButton  onClick={onDelete(deleteIndex)} >
+              <CheckCircleIcon style={{color: "#90ee90"}}/>
+            </IconButton>
+          </Tooltip>
+          
+          <Tooltip title="No" placement="bottom"  arrow>
+            <IconButton  onClick={handleCloseModal} >
+              <CancelIcon style={{color: "#F46A4E"}}/>
+            </IconButton>
+          </Tooltip>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
 
 function mapStateToProps(state) {
-    console.log("aici-redux",state);
     return {
       notes:  state.notes
     }

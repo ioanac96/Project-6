@@ -29,7 +29,9 @@ const handleNotes = (state = initialState, action) => {
             }
         
         case DELETE_NOTE:
+            console.log("delete", action.index)
             let newArray = state.notes.filter((current, i) => i !== action.index);
+            
             return {
                 ...state,
                 notes: newArray

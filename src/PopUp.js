@@ -4,6 +4,8 @@ import SaveIcon from '@material-ui/icons/Save';
 import CancelIcon from '@material-ui/icons/Cancel';
 import {addNote, saveNote} from './actions.js';
 import {connect} from 'react-redux';
+import { Tooltip } from '@material-ui/core';
+import AddCircle from '@material-ui/icons/AddCircle';
 
 
 function PopUp(props) {
@@ -48,10 +50,25 @@ function PopUp(props) {
             <textarea id="content" type="text" onChange={onChangeText()} value={text} placeholder="Text" />
             <div className="icons-parent">
             <div className="icons-div" >{(props.type==="add")? 
-                <button  onClick={() => {onClickAdd(title, text)}} className="add-button">Add</button> : 
-                <SaveIcon className="edit-icon" onClick={() => {onSave(title, text)}} />}</div>
+                <div>
+                    <Tooltip title="Add" placement="bottom"  arrow onClick={props.onCancel}>
+                        <AddCircle className="edit-icon" onClick={() => {onClickAdd(title, text)}}/>
+                    </Tooltip> 
+                    <Tooltip title="Cancel" placement="bottom"  arrow onClick={props.onCancel}>
+                        <CancelIcon className="cancel-icon"/>
+                    </Tooltip> 
+                </div>
+                 : 
+                <Tooltip title="Save" placement="bottom"  arrow>
+                    <SaveIcon className="edit-icon" onClick={() => {onSave(title, text)}} />
+                </Tooltip>
+                }</div>
             {
-                (props.close === true) ? <div onClick={()=>{onSave(props.title, props.text)}} ><CancelIcon className="edit-icon" /></div> : null
+                (props.close === true) ? <div onClick={()=>{onSave(props.title, props.text)}} >
+                    <Tooltip title="Cancel" placement="bottom"  arrow>
+                        <CancelIcon className="cancel-icon"/>
+                    </Tooltip>    
+                 </div> : null
             }
             </div>
         </div>

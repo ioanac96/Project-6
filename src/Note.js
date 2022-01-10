@@ -7,7 +7,7 @@ function Note(props) {
         <div className="note">
             <div className="title">{title}</div>
             <div className="date">{date}</div>
-            <div className="text">{text}</div>
+            <div className="text">{text.split('\n').map((p) => (<p className="listItem">{p}</p>))}</div>
         </div>
     )
 };

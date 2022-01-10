@@ -1,24 +1,29 @@
 @import "colors.less";
 
+.note {
+  background-color: @note-color;
+  color: @text-color;
 
-.note {  
-    background-color: @note-color;
-    color: @text-color;
+  .title {
+    font-weight: bold;
+    font-size: 16px;
+  }
 
+  .date {
+    color: @pale-color;
+    font-size: 13px;
+    padding-bottom: 8px;
+  }
 
-    .title {
-        font-weight: bold;
-        font-size: 16px;
+  .text {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    .listItem {
+      padding: 2px;
     }
-
-    .date {
-        color: @pale-color;
-        font-size: 13px;
-        padding-bottom: 8px;;
-    }
-
-    .text {
-        padding-bottom: 10px;
-    }
-
+  }
 }
